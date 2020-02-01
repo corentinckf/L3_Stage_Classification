@@ -11,13 +11,19 @@ import matplotlib.pyplot as plt
 from networkx.algorithms import isomorphism
 import time
 
+edges_filename = 'mutag_data/MUTAG_A.txt'
+edgesLabels_filename = 'mutag_data/MUTAG_edge_labels.txt'
+graphInds_filename = 'mutag_data/MUTAG_graph_indicator.txt'
+graphsLabels_filename = 'mutag_data/MUTAG_graph_labels.txt'
+nodesLabels_filename = 'mutag_data/MUTAG_node_labels.txt'
+
 #Fonction get_NodesLabels :
     # Récupère dans le fichier DS_node_labels.txt la liste des labels des noeuds et la renvoie
     # WARNING : Noeud 1 a pour index 0 dans cette liste
 def get_NodesLabels(file_name):
     file_object = open(file_name, 'r')
     nodesLabels_list = []
-    while True:
+    while 1:
         line_content = file_object.readline().strip()
         if not line_content:
             #eof
@@ -141,7 +147,7 @@ def create_Graph(nodes_list,edges_list,global_labels_list_node,global_labels_lis
 #Fonction display_Graph
     #Affiche le graphe choisi
 def display_Graph(nb_graph):
-    G = create_Graph(get_GraphNodes(nb_graph,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),get_GraphEdges(get_GraphNodes(nb_graph,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),'mutag_data/MUTAG_A.txt'),get_NodesLabels('mutag_data/MUTAG_node_labels.txt'),get_EdgesLabels('mutag_data/MUTAG_edge_labels.txt'))
+    G = create_Graph(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename))
     print("Noeuds graph :" + str(G.nodes))
     print("Liens graph :" + str(G.edges))
     nx.draw(G)
@@ -154,10 +160,10 @@ def compare(nb_graph,subgraph):
   start_time = time.time()
   list = []
   county=0
-  print("Liste des résultats  : ('id_graph','Sous-graph isomorphique?Y/N')")
+  print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
   for i in range(1,nb_graph+1):
     
-    G = create_Graph(get_GraphNodes(i,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),'mutag_data/MUTAG_A.txt'),get_NodesLabels('mutag_data/MUTAG_node_labels.txt'),get_EdgesLabels('mutag_data/MUTAG_edge_labels.txt')) # Créer un graphe 
+    G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename)) # Créer un graphe 
     GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
     if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
       list.append((i,'Oui'))
@@ -173,7 +179,7 @@ def compare(nb_graph,subgraph):
 #Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
 subgraph_nodes = ["1","2","3","4","5","6"]
 subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
-subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels('mutag_data/MUTAG_node_labels.txt'),get_EdgesLabels('mutag_data/MUTAG_edge_labels.txt'))
+subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename))
 print('\n')
 print(compare(188, subgraph_test))
 
@@ -181,11 +187,11 @@ print(compare(188, subgraph_test))
 
 
 #Test ajout des attributs
-# G = create_Graph(get_GraphNodes(1,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),get_GraphEdges(get_GraphNodes(1,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),'mutag_data/MUTAG_A.txt'),get_NodesLabels('mutag_data/MUTAG_node_labels.txt')) # Créer un graphe
+# G = create_Graph(get_GraphNodes(1,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(1,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename)) # Créer un graphe
 # print(G.nodes.data())
 # print('\n')
 
-# G2 = create_Graph(get_GraphNodes(2,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),get_GraphEdges(get_GraphNodes(2,get_GraphIndicator('mutag_data/MUTAG_graph_indicator.txt')),'mutag_data/MUTAG_A.txt'),get_NodesLabels('mutag_data/MUTAG_node_labels.txt')) # Créer un graphe
+# G2 = create_Graph(get_GraphNodes(2,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(2,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename)) # Créer un graphe
 # print(G2.nodes.data())
 
 # Graphe 63
