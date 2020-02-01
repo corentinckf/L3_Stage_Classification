@@ -38,7 +38,7 @@ def get_NodesLabels(file_name):
 def get_EdgesLabels(file_name):
     file_object = open(file_name, 'r')
     edgesLabels_list = []
-    while True:
+    while 1:
         line_content = file_object.readline().strip()
         if not line_content:
             #eof
@@ -53,7 +53,7 @@ def get_EdgesLabels(file_name):
 def get_GraphLabels(file_name):
     file_object = open(file_name, 'r')
     graphLabels_list = []
-    while True:
+    while 1:
         line_content = file_object.readline().strip()
         if not line_content:
             #eof
@@ -68,7 +68,7 @@ def get_GraphLabels(file_name):
 def get_GraphIndicator(file_name):
     file_object = open(file_name, 'r')
     graphIndicator_list = []
-    while True:
+    while 1:
         line_content = file_object.readline().strip()
         if not line_content:
             #eof
@@ -83,7 +83,7 @@ def get_GraphIndicator(file_name):
 def get_Edges(file_name):
     file_object = open(file_name, 'r')
     edges_list = []
-    while True:
+    while 1:
         line_content = file_object.readline().strip().replace(',', '')
         if not line_content:
             #eof
