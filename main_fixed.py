@@ -178,6 +178,19 @@ def get_EdgesByLabel(G,label):
             list.append((i[0],(i[1])))
     return list
 
+#Fonction get_GraphClass
+    # Renvoie le nombre des graphes de la classe 1,le nombre des graphes de la classe -1, le total des deux nombre
+def get_GraphClass():
+    graphlabelslist = get_GraphLabels(graphsLabels_filename)
+    countC1 = 0
+    countC2 = 0
+    for i in range(0,len(graphlabelslist)):
+        if graphlabelslist[i] == 1 :
+            countC1 += 1
+        else:
+            countC2 += 1
+    return countC1, countC2, countC1+countC2
+
 #Fonction display_Graph
     #Affiche le graphe choisi
 def display_subGraph(G):
@@ -350,6 +363,12 @@ def compare(nb_graph,subgraph):
     start_time = time.time()
     list = []
     county=0
+    fsgC1 = 0
+    fsgC2 = 0
+    totAppSg = 0
+    noFsgC1 = 0
+    noFsgC2 = 0
+    totNAppSg = 0
     print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
     for i in range(1,nb_graph+1):
 
@@ -357,13 +376,40 @@ def compare(nb_graph,subgraph):
         GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
         if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
             list.append((i,'Oui'))
-            county+=1
+            county+=1 
+            
+            if get_GraphLabels(graphsLabels_filename)[i] == 1:
+                fsgC1+=1
+            else:
+                fsgC2+=1
+                
         else:
             list.append((i,"Non"))
     list.append(("yes :", county))
     list.append(("no :", nb_graph-county))
     end_time = time.time()
-    return list,"Temps éxécution : " + str(end_time-start_time) + " seconde(s)"
+    noFsgC1 = get_GraphClass()[0]-fsgC1
+    noFsgC2 = get_GraphClass()[1]-fsgC2
+    totAppSg = fsgC1+fsgC2
+    totNAppSg =noFsgC1+noFsgC2
+
+    #############################
+    # Table de contingence fictive, à modifier si nécessaire
+    Ctge_Table = [
+    [fsgC1, fsgC2, totAppSg],
+    [noFsgC1, noFsgC2, totNAppSg ], 
+    [get_GraphClass()[0], get_GraphClass()[1], get_GraphClass()[2] ]]
+
+    Ctge_Table_df = pd.DataFrame(Ctge_Table,
+                                 index=['Sg','~Sg', ''],
+                                 columns=['Graphe (1)',' Gaphe (-1)', 'Total Apparition'])
+
+    print('/n')
+    print(Ctge_Table_df)
+    print('/n')
+    #############################
+    
+    return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
 
 #Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
 subgraph_nodes = ["1","2","3","4","5","6"]
@@ -390,13 +436,4 @@ display_subGraph(subgraph_test)
 #Graphe 150
 #display_Graph(150)
 
-def get_GraphClass():
-    graphlabelslist = get_GraphLabels(graphsLabels_filename)
-    countC1 = 0
-    countC2 = 0
-    for i in range(0,len(graphlabelslist)):
-        if graphlabelslist[i] == 1 :
-            countC1 += 1
-        else:
-            countC2 += 1
-    return countC1, countC2, countC1+countC2
+
