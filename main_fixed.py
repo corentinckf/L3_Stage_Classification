@@ -389,3 +389,14 @@ display_subGraph(subgraph_test)
 
 #Graphe 150
 #display_Graph(150)
+
+def get_GraphClass():
+    graphlabelslist = get_GraphLabels(graphsLabels_filename)
+    countC1 = 0
+    countC2 = 0
+    for i in range(0,len(graphlabelslist)):
+        if graphlabelslist[i] == 1 :
+            countC1 += 1
+        else:
+            countC2 += 1
+    return countC1, countC2, countC1+countC2
