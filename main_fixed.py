@@ -408,8 +408,10 @@ def compare(nb_graph,subgraph):
 
     print('/n')
     print(Ctge_Table_df)
-    print("Confiance du SG dans la classe C1"+ fsgC1/get_GraphClass()[0])
-    print("Confiance du SG dans la classe C2"+ fsgC1/get_GraphClass()[1])
+    print('/n')
+    #print("Confiance du SG dans la classe C1" + fsgC1/get_GraphClass()[0])
+    print('/n')
+    #print("Confiance du SG dans la classe C2" + fsgC2/get_GraphClass()[1])
     print('/n')
     #############################
     
