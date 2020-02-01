@@ -168,53 +168,65 @@ def get_NodesByLabel(G,label):
             list.append(int(i[0]))
     return list
 
+#Fonction get_EdgesByLabel
+    #Renvoies la liste des liens correspondant au label demandé dans G
+def get_EdgesByLabel(G,label):
+    list = []
+    edges = G.edges.data()
+    for i in edges:
+        if i[2]['label']==label:
+            list.append((i[0],(i[1])))
+    return list
+
 #Fonction display_Graph
     #Affiche le graphe choisi
 def display_subGraph(G):
+    pos=nx.spring_layout(G)
     print("Noeuds graph :" + str(G.nodes))
     print("Liens graph :" + str(G.edges))
 
     #Coloration des noeuds
+    
 
     # 0  C black
-    print(get_NodesByLabel(G,0))
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    print(get_EdgesByLabel(G,'0'))
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,0)],#MODDDDIFIER
                        node_color='black',
                        node_size=500,
                    alpha=0.8)
     # 1  N blue
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,1)],
                        node_color='dodgerblue',
                        node_size=500,
                    alpha=0.8)
     # 2  O red
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,2)],
                        node_color='red',
                        node_size=500,
                    alpha=0.8)
     # 3  F yellow
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,3)],
                        node_color='yellow',
                        node_size=500,
                    alpha=0.8)
     # 4  I purple
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,4)],
                        node_color='purple',
                        node_size=500,
                    alpha=0.8)
     # 5  Cl green
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,5)],
                        node_color='green',
                        node_size=500,
                    alpha=0.8)
     # 6  Br brown
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=[str(i) for i in get_NodesByLabel(G,6)],
                        node_color='brown',
                        node_size=500,
@@ -223,57 +235,79 @@ def display_subGraph(G):
     #Coloration des liens
 
     #0  aromatic
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'0'),
+                       edge_color='silver',
+                       line_width=10,
+                   alpha=1)
     #1  single
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'1'),
+                       edge_color='dimgrey',
+                       line_width=10,
+                   alpha=1)
     #2  double
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'2'),
+                       edge_color='slateblue',
+                       line_width=10,
+                   alpha=1)
     #3  triple
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'3'),
+                       edge_color='crimson',
+                       line_width=10,
+                   alpha=1)
+    plt.axis('off')
     plt.show() #visualisation pas possible sur repl
 #Fonction display_Graph
     #Affiche le graphe choisi
 def display_Graph(nb_graph):
     G = create_Graph(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
+    pos=nx.spring_layout(G)
     print("Noeuds graph :" + str(G.nodes))
     print("Liens graph :" + str(G.edges))
 
     #Coloration des noeuds
 
     # 0  C black
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,0),
                        node_color='black',
                        node_size=500,
                    alpha=0.8)
     # 1  N blue
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,1),
                        node_color='dodgerblue',
                        node_size=500,
                    alpha=0.8)
     # 2  O red
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,2),
                        node_color='red',
                        node_size=500,
                    alpha=0.8)
     # 3  F yellow
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,3),
                        node_color='yellow',
                        node_size=500,
                    alpha=0.8)
     # 4  I purple
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,4),
                        node_color='purple',
                        node_size=500,
                    alpha=0.8)
     # 5  Cl green
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,5),
                        node_color='green',
                        node_size=500,
                    alpha=0.8)
     # 6  Br brown
-    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+    nx.draw_networkx_nodes(G,pos,
                        nodelist=get_NodesByLabel(G,6),
                        node_color='brown',
                        node_size=500,
@@ -282,9 +316,31 @@ def display_Graph(nb_graph):
     #Coloration des liens
 
     #0  aromatic
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'0'),
+                       edge_color='silver',
+                       line_width=10,
+                   alpha=1)
     #1  single
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'1'),
+                       edge_color='dimgrey',
+                       line_width=10,
+                   alpha=1)
     #2  double
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'2'),
+                       edge_color='slateblue',
+                       line_width=10,
+                   alpha=1)
     #3  triple
+    nx.draw_networkx_edges(G,pos,
+                       edgelist=get_EdgesByLabel(G,'3'),
+                       edge_color='crimson',
+                       line_width=10,
+                   alpha=1)
+
+    plt.axis('off')
     plt.show() #visualisation pas possible sur repl
 
 
@@ -314,6 +370,8 @@ subgraph_nodes = ["1","2","3","4","5","6"]
 subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
 subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 print('\n')
+print(subgraph_test.edges.data())
+print(get_EdgesByLabel(subgraph_test,0))
 # print(compare(188, subgraph_test))
 
 # subgraph_nodes = ["3353","3354","3355"]
@@ -326,7 +384,7 @@ print('\n')
 # Graphe 63
 # some math labels
 
-display_Graph(1)
+display_Graph(180)
 display_subGraph(subgraph_test)
 
 #Graphe 150
