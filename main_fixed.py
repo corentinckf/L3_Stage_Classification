@@ -8,7 +8,7 @@
 
 import networkx as nx
 import matplotlib.pyplot as plt
-import pandas as pd 
+#import pandas as pd 
 from networkx.algorithms import isomorphism
 import time
 
@@ -307,15 +307,13 @@ def compare(nb_graph,subgraph):
     list.append(("yes :", county))
     list.append(("no :", nb_graph-county))
     end_time = time.time()
-    return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
+    return list,"Temps éxécution : " + str(end_time-start_time) + " seconde(s)"
 
 #Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
 subgraph_nodes = ["1","2","3","4","5","6"]
 subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
 subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 print('\n')
-print(subgraph_test.nodes.data())
-print(get_NodesByLabel(subgraph_test,0))
 # print(compare(188, subgraph_test))
 
 # subgraph_nodes = ["3353","3354","3355"]
