@@ -176,44 +176,45 @@ def display_subGraph(G):
     #Coloration des noeuds
 
     # 0  C black
+    print(get_NodesByLabel(G,0))
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,0),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,0)],#MODDDDIFIER
                        node_color='black',
                        node_size=500,
                    alpha=0.8)
     # 1  N blue
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,1),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,1)],
                        node_color='dodgerblue',
                        node_size=500,
                    alpha=0.8)
     # 2  O red
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,2),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,2)],
                        node_color='red',
                        node_size=500,
                    alpha=0.8)
     # 3  F yellow
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,3),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,3)],
                        node_color='yellow',
                        node_size=500,
                    alpha=0.8)
     # 4  I purple
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,4),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,4)],
                        node_color='purple',
                        node_size=500,
                    alpha=0.8)
     # 5  Cl green
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,5),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,5)],
                        node_color='green',
                        node_size=500,
                    alpha=0.8)
     # 6  Br brown
     nx.draw_networkx_nodes(G,nx.spring_layout(G),
-                       nodelist=get_NodesByLabel(G,6),
+                       nodelist=[str(i) for i in get_NodesByLabel(G,6)],
                        node_color='brown',
                        node_size=500,
                    alpha=0.8)
@@ -313,7 +314,7 @@ subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","
 subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 print('\n')
 print(subgraph_test.nodes.data())
-# print(get_NodesByLabel(subgraph_test,0))
+print(get_NodesByLabel(subgraph_test,0))
 # print(compare(188, subgraph_test))
 
 # subgraph_nodes = ["3353","3354","3355"]
@@ -327,7 +328,7 @@ print(subgraph_test.nodes.data())
 # some math labels
 
 display_Graph(1)
-#display_subGraph(subgraph_test)
+display_subGraph(subgraph_test)
 
 #Graphe 150
 #display_Graph(150)
