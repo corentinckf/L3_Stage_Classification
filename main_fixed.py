@@ -369,6 +369,8 @@ def compare(nb_graph,subgraph):
     noFsgC1 = 0
     noFsgC2 = 0
     totNAppSg = 0
+    confianceC1 = 0
+    confianceC2 = 0
     print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
     for i in range(1,nb_graph+1):
 
@@ -406,6 +408,8 @@ def compare(nb_graph,subgraph):
 
     print('/n')
     print(Ctge_Table_df)
+    print("Confiance du SG dans la classe C1"+ fsgC1/get_GraphClass()[0])
+    print("Confiance du SG dans la classe C2"+ fsgC1/get_GraphClass()[1])
     print('/n')
     #############################
     
