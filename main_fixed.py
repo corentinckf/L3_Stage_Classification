@@ -157,54 +157,177 @@ def create_Graph(nodes_list,edges_list,global_labels_list_node,global_labels_lis
     
     return G
 
+#Fonction get_NodesByLabel
+    #Renvoies la liste des noeuds correspondant au label demandé dans G
+def get_NodesByLabel(G,label):
+    list = []
+    nodes = G.nodes.data()
+    for i in nodes:
+        if(i[1]['atome']==label):
+            list.append(int(i[0]))
+    return list
+
+#Fonction display_Graph
+    #Affiche le graphe choisi
+def display_subGraph(G):
+    print("Noeuds graph :" + str(G.nodes))
+    print("Liens graph :" + str(G.edges))
+
+    #Coloration des noeuds
+
+    # 0  C black
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,0),
+                       node_color='black',
+                       node_size=500,
+                   alpha=0.8)
+    # 1  N blue
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,1),
+                       node_color='dodgerblue',
+                       node_size=500,
+                   alpha=0.8)
+    # 2  O red
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,2),
+                       node_color='red',
+                       node_size=500,
+                   alpha=0.8)
+    # 3  F yellow
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,3),
+                       node_color='yellow',
+                       node_size=500,
+                   alpha=0.8)
+    # 4  I purple
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,4),
+                       node_color='purple',
+                       node_size=500,
+                   alpha=0.8)
+    # 5  Cl green
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,5),
+                       node_color='green',
+                       node_size=500,
+                   alpha=0.8)
+    # 6  Br brown
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,6),
+                       node_color='brown',
+                       node_size=500,
+                   alpha=0.8)
+
+    #Coloration des liens
+
+    #0  aromatic
+    #1  single
+    #2  double
+    #3  triple
+    plt.show() #visualisation pas possible sur repl
 #Fonction display_Graph
     #Affiche le graphe choisi
 def display_Graph(nb_graph):
     G = create_Graph(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
     print("Noeuds graph :" + str(G.nodes))
     print("Liens graph :" + str(G.edges))
-    nx.draw(G)
+
+    #Coloration des noeuds
+
+    # 0  C black
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,0),
+                       node_color='black',
+                       node_size=500,
+                   alpha=0.8)
+    # 1  N blue
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,1),
+                       node_color='dodgerblue',
+                       node_size=500,
+                   alpha=0.8)
+    # 2  O red
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,2),
+                       node_color='red',
+                       node_size=500,
+                   alpha=0.8)
+    # 3  F yellow
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,3),
+                       node_color='yellow',
+                       node_size=500,
+                   alpha=0.8)
+    # 4  I purple
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,4),
+                       node_color='purple',
+                       node_size=500,
+                   alpha=0.8)
+    # 5  Cl green
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,5),
+                       node_color='green',
+                       node_size=500,
+                   alpha=0.8)
+    # 6  Br brown
+    nx.draw_networkx_nodes(G,nx.spring_layout(G),
+                       nodelist=get_NodesByLabel(G,6),
+                       node_color='brown',
+                       node_size=500,
+                   alpha=0.8)
+
+    #Coloration des liens
+
+    #0  aromatic
+    #1  single
+    #2  double
+    #3  triple
     plt.show() #visualisation pas possible sur repl
 
 
 
 #Fonction qui , pour chaque graphe créé, compare si le sous graphe 'subgraph' choisi correspond à l'ensemble des graphes 'nbgraph' de la base de données sous forme de liste
 def compare(nb_graph,subgraph):
-  start_time = time.time()
-  list = []
-  county=0
-  print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
-  for i in range(1,nb_graph+1):
-    
-    G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename) # Créer un graphe 
-    GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
-    if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
-      list.append((i,'Oui'))
-      county+=1
-    else:
-      list.append((i,"Non"))
-  list.append(("yes :", county))
-  list.append(("no :", nb_graph-county))
-  end_time = time.time()
-  return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
+    start_time = time.time()
+    list = []
+    county=0
+    print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
+    for i in range(1,nb_graph+1):
+
+        G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename) # Créer un graphe 
+        GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
+        if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
+            list.append((i,'Oui'))
+            county+=1
+        else:
+            list.append((i,"Non"))
+    list.append(("yes :", county))
+    list.append(("no :", nb_graph-county))
+    end_time = time.time()
+    return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
 
 #Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
 subgraph_nodes = ["1","2","3","4","5","6"]
 subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
 subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 print('\n')
-print(subgraph_test.edges.data())
-print(compare(188, subgraph_test))
+print(subgraph_test.nodes.data())
+# print(get_NodesByLabel(subgraph_test,0))
+# print(compare(188, subgraph_test))
 
 # subgraph_nodes = ["3353","3354","3355"]
 # subgraph_edges = [("3353","3354"), ("3353","3355")]
 # subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 # print('\n')
-# print(subgraph_test.edges.data())
-# print(compare(188, subgraph_test))
+# print(subgraph_test.nodes.data())
+#print(compare(188, subgraph_test))
 
 # Graphe 63
-#display_Graph(63)
+# some math labels
+
+display_Graph(1)
+#display_subGraph(subgraph_test)
 
 #Graphe 150
 #display_Graph(150)
