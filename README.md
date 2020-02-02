@@ -10,5 +10,11 @@ La **Classification supervisée** a pour but d'étiquetter une donnée , en ayan
 
 > Exemples : Attribuer une rubrique à un article, Evaluer la toxicité d'une molécule etc...
 
-_(La Classification dîtes non-supervisée, elle, vise à trouver des ressemblances entre des éléments de données pour établir des groupes)_
+_Note : La Classification dîtes non-supervisée, elle, vise à trouver des ressemblances entre des éléments de données pour établir des groupes_
 
+Pour établir ces règles de classification, l'on procéde à une fouille de donnée qui a pour but de découvrir de l'information utile.
+La fouille de graphes permet de traiter des données complexes:
+
+> Exemples : Molécules, réseaux etc...
+
+Mais si les graphes sont efficaces en terme de représentation de données, il est difficile d'étendre les méthodes de fouille de données ensemblistes à ces derniers. Notamment, l'appariement entre graphes/graphes ou graphes/sous-graphes qui s'avère être plus compliqué que celui entre motifs ensemblistes ( Problème de l'isomorphisme de graphes/sous-graphes )
