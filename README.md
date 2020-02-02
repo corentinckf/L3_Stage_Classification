@@ -9,7 +9,7 @@ Stagiaires : Chien Kan Foon Brandon - Corre Stanislas - Chien Kan Foon Corentin 
 _____________________________________________________________________________________________________________________________________
 
 
-**Introduction**
+## Introduction
 
 La **Classification supervisée** a pour but d'étiquetter une donnée , en ayant au préalable établi des règles par le biais  d'une étude d'échantillon d'apprentissage dont la catégorisation est connue.
 
