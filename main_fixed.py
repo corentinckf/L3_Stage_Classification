@@ -282,7 +282,7 @@ def display_Graph(graph):
 
 #Fonction qui , pour chaque graphe créé, compare si le sous graphe 'subgraph' choisi correspond à l'ensemble des graphes 'nbgraph' de la base de données sous forme de liste
 def compare(nb_graph,subgraph):
-    start_time = time.time()
+    
     list = []
     county=0
     fsgC1 = 0
@@ -293,25 +293,25 @@ def compare(nb_graph,subgraph):
     totNAppSg = 0
     confianceC1 = 0
     confianceC2 = 0
-    print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
     for i in range(1,nb_graph+1):
 
         G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename) # Créer un graphe 
         GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
         if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
-            list.append((i,'Oui'))
-            county+=1 
+            #list.append((i,'Oui'))
+            #county+=1 
             
-            if get_GraphLabels(graphsLabels_filename)[i] == 1:
+            if get_GraphLabels(graphsLabels_filename)[i-1] == 1:
                 fsgC1+=1
             else:
                 fsgC2+=1
                 
         else:
-            list.append((i,"Non"))
-    list.append(("yes :", county))
-    list.append(("no :", nb_graph-county))
-    end_time = time.time()
+            continue
+            #list.append((i,"Non"))
+    # list.append(("yes :", county))
+    # list.append(("no :", nb_graph-county))
+    
     noFsgC1 = get_GraphClass()[0]-fsgC1
     noFsgC2 = get_GraphClass()[1]-fsgC2
     totAppSg = fsgC1+fsgC2
@@ -328,16 +328,15 @@ def compare(nb_graph,subgraph):
                                  index=['Sg','~Sg', ''],
                                  columns=['Graphe (1)',' Gaphe (-1)', 'Total Apparition'])
 
-    print('/n')
+    print('\n')
     print(Ctge_Table_df)
-    print('/n')
+    #print('\n Temps du calcul de la table: ' + str(end_time))
     #print("Confiance du SG dans la classe C1" + fsgC1/get_GraphClass()[0])
-    print('/n')
+
     #print("Confiance du SG dans la classe C2" + fsgC2/get_GraphClass()[1])
-    print('/n')
     #############################
     
-    return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
+    return list
 
 #################
 # Fonction qui va extraire un sous-graphe aléatoire dans le graphe donné
@@ -388,13 +387,16 @@ def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_file
     sg = create_Graph(nodes,edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
     return sg
 
-for i in range(0,4):
+
+start_time = time.time()
+for i in range(0,10):
     sb = SgExtractor(1, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename)
+    print('\n Table ' + str(i+1) + ":")
     compare(188,sb)
     print("\n")
-    print(sb.nodes.data())
+    print("Noeuds : \n" + str(sb.nodes.data()))
     print("\n")
-    print(sb.edges.data())
-
-
+    print("Liens: \n " + str(sb.edges.data()))
+end_time = time.time()
+print("Temps éxécution : " + str(end_time-start_time) + "seconde(s)")
 
