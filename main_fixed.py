@@ -386,7 +386,40 @@ def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_file
             edges.append([a, b])
     sg = create_Graph(nodes,edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
     return sg
+########################
+## Fonction qui coupe la base en deux tout en gardant les proportions de classe à 1 élément près
+    # Retourne un tuples contenant deux liste contenant elle même des id de graphe
+    # Chacune des deux listes reprèsente respectivement les bases train et test 
+def cutBase(graphsLabels_filename):
+    listeClasses = get_GraphIndicator(graphsLabels_filename)
+    l0, l1 = list(), list()
 
+    # Compte le nb d'élements dans la classe -1  et 1, respectivement nbc0 et nbc1
+    nbc0, nbc1 = 0, 0
+    for i in range(len(listeClasses)):
+        if listeClasses[i] == -1:
+            nbc0 += 1
+        else:
+            nbc1 += 1
+    # ic0 et ic1 respectivement ieme element des classe -1 et 1
+    # on arrette de le compter quand on arrive à la moitié du nb de la classe 
+    # pour economiser des traitements inutile
+    ic0 = 0
+    ic1 = 0
+    for i in range(len(listeClasses)):
+        if listeClasses[i] == -1:
+            if ic0 < nbc0/2:
+                ic0 += 1
+                l0.append(i)
+            else:
+                l1.append(i)
+        else:
+            if ic1 < nbc1/2:
+                ic1 += 1
+                l0.append(i)
+            else:
+                l1.append(i)
+    return (l0, l1)
 
 start_time = time.time()
 for i in range(0,10):
