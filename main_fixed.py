@@ -413,7 +413,9 @@ def compare(nb_graph,subgraph):
     county=0
     fsgC1, fsgC2, totAppSg = 0, 0, 0
     noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
-    confianceC1, confianceC2 = 0, 0
+    cfC1, cfC2 = 0, 0
+    fqC1, fqC2 = 0, 0
+    amlC1, amlC2 = 0, 0
     print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
     for i in range(1,nb_graph+1):
 
@@ -434,10 +436,25 @@ def compare(nb_graph,subgraph):
     list.append(("no :", nb_graph-county))
 
     end_time = time.time()
+    # ~sg
     noFsgC1 = get_GraphClass()[0]-fsgC1
     noFsgC2 = get_GraphClass()[1]-fsgC2
     totAppSg = fsgC1+fsgC2
-    totNAppSg =noFsgC1+noFsgC2
+    totNAppSg = noFsgC1+noFsgC2
+
+    #Confiance/Fréquence/Amélioration/crossrate
+    fqC1 = fsgC1 / get_GraphClass()[2]
+    fqC2 = fsgC2 / get_GraphClass()[2]
+
+    cfC1 = fqC1 / ((fsgC1+fsgC2)/get_GraphClass()[2])
+    cfC2 = fqC2 / ((fsgC1+fsgC2)/get_GraphClass()[2])
+
+    amlC1 = cfC1 / ((get_GraphClass()[0]/get_GraphClass()[2]))
+    amlC2 = cfC1 / (get_GraphClass()[1]/get_GraphClass()[2])
+
+    growthR = (fqC1/get_GraphClass()[0]) / (fqC2/get_GraphClass()[1])
+    
+
 
     #############################
     # Table de contingence fictive, à modifier si nécessaire
@@ -451,7 +468,7 @@ def compare(nb_graph,subgraph):
     #############################
     
     return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
-
+    # , "confianceC1 : " + str(cfC1), " confianceC2 : " + str(cfC2), " frequenceC1 : " + str(fqC1), " frequenceC2 : " + str(fqC2)," ameliorationC1 : " + str(amlC1), " ameliorationC2 : " + str(amlC2), " growth : " + str(growthR)
 ###
 #################
 # Fonction qui va extraire un sous-graphe aléatoire dans le graphe donné
@@ -510,12 +527,8 @@ def cutBase(graphsLabels_filename):
     l0, l1 = list(), list()
 
     # Compte le nb d'élements dans la classe -1  et 1, respectivement nbc0 et nbc1
-    nbc0, nbc1 = 0, 0
-    for i in range(len(listeClasses)):
-        if listeClasses[i] == -1:
-            nbc0 += 1
-        else:
-            nbc1 += 1
+    nbc0, nbc1 = get_GraphClass()[1], get_GraphClass()[0]
+
     # ic0 et ic1 respectivement ieme element des classe -1 et 1
     # on arrette de le compter quand on arrive à la moitié du nb de la classe 
     # pour economiser des traitements inutile
@@ -543,7 +556,7 @@ def cutBase(graphsLabels_filename):
 #- TESTS
 
 #- Test de l'extracteur de sous_graphes avec dis sous_graphes aléatoires
-start_time = time.time()
+'''start_time = time.time()
 for i in range(0,10):
     sb = SgExtractor(1, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename)
     print('\n Table ' + str(i+1) + ":")
@@ -553,21 +566,22 @@ for i in range(0,10):
     print("\n")
     print("Liens: \n " + str(sb.edges.data()))
 end_time = time.time()
-print("Temps éxécution : " + str(end_time-start_time) + "seconde(s)")
+print("Temps éxécution : " + str(end_time-start_time) + "seconde(s)")'''
 
 
 
 #- Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
-subgraph_nodes = ["1","2","3","4","5","6"]
+'''subgraph_nodes = ["1","2","3","4","5","6"]
 subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
 subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
 print('\n')
 print(subgraph_test.edges.data())
 print(get_EdgesByLabel(subgraph_test,0))
-print(compare(188, subgraph_test))
+print(compare(188, subgraph_test))'''
 
 #####
 
+'''
 #- tests d'affichages
 display_Graph(180)
 display_subGraph(subgraph_test)
@@ -576,14 +590,45 @@ display_subGraph(subgraph_test)
 #display_Graph(150)
 
 ##############
-
+'''
 # Autres tests
-
-# subgraph_nodes = ["3353","3354","3355"]
-# subgraph_edges = [("3353","3354"), ("3353","3355")]
-# subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
-# print('\n')
-# print(subgraph_test.nodes.data())
-#print(compare(188, subgraph_test))
+'''
+subgraph_nodes = ["3353","3354","3355"]
+subgraph_edges = [("3353","3354"), ("3353","3355")]
+subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
+print('\n')
+print(subgraph_test.nodes.data())
+print(compare(188, subgraph_test))'''
 
 ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
