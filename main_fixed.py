@@ -16,6 +16,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd 
 from networkx.algorithms import isomorphism
+import random
 import time
 
 ###
@@ -236,171 +237,89 @@ def get_ContingenceTable(fsgC1, fsgC2, totAppSg, noFsgC1, noFsgC2, totNAppSg):
 
 # Fonction display_Graph
     # Affiche le graphe choisi
-def display_Graph(nb_graph):
-    G = create_Graph(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(nb_graph,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
-    pos=nx.spring_layout(G)
-    print("Noeuds graph :" + str(G.nodes))
-    print("Liens graph :" + str(G.edges))
+def display_Graph(graph):
+  if type(graph) is int:
+    G = create_Graph(get_GraphNodes(graph,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(graph,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
+  else:
+    G = graph
+  pos=nx.spring_layout(G)
+  print("Noeuds graph :" + str(G.nodes))
+  print("Liens graph :" + str(G.edges))
 
-    #Coloration des noeuds
+  #Coloration des noeuds
 
-    # 0  C black
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,0),
-                    node_color='black',
-                    node_size=500,
-                alpha=0.8)
-    # 1  N blue
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,1),
-                    node_color='dodgerblue',
-                    node_size=500,
-                alpha=0.8)
-    # 2  O red
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,2),
-                    node_color='red',
-                    node_size=500,
-                alpha=0.8)
-    # 3  F yellow
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,3),
-                    node_color='yellow',
-                    node_size=500,
-                alpha=0.8)
-    # 4  I purple
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,4),
-                    node_color='purple',
-                    node_size=500,
-                alpha=0.8)
-    # 5  Cl green
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,5),
-                    node_color='green',
-                    node_size=500,
-                alpha=0.8)
-    # 6  Br brown
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=get_NodesByLabel(G,6),
-                    node_color='brown',
-                    node_size=500,
-                alpha=0.8)
+  # 0  C black
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,0),
+                  node_color='black',
+                  node_size=500,
+              alpha=0.8)
+  # 1  N blue
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,1),
+                  node_color='dodgerblue',
+                  node_size=500,
+              alpha=0.8)
+  # 2  O red
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,2),
+                  node_color='red',
+                  node_size=500,
+              alpha=0.8)
+  # 3  F yellow
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,3),
+                  node_color='yellow',
+                  node_size=500,
+              alpha=0.8)
+  # 4  I purple
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,4),
+                  node_color='purple',
+                  node_size=500,
+              alpha=0.8)
+  # 5  Cl green
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,5),
+                  node_color='green',
+                  node_size=500,
+              alpha=0.8)
+  # 6  Br brown
+  nx.draw_networkx_nodes(G,pos,
+                  nodelist=get_NodesByLabel(G,6),
+                  node_color='brown',
+                  node_size=500,
+              alpha=0.8)
 
-    #Coloration des liens
+  #Coloration des liens
 
-    #0  aromatic
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'0'),
-                    edge_color='silver',
-                    line_width=10,
-                alpha=1)
-    #1  single
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'1'),
-                    edge_color='dimgrey',
-                    line_width=10,
-                alpha=1)
-    #2  double
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'2'),
-                    edge_color='slateblue',
-                    line_width=10,
-                alpha=1)
-    #3  triple
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'3'),
-                    edge_color='crimson',
-                    line_width=10,
-                alpha=1)
+  #0  aromatic
+  nx.draw_networkx_edges(G,pos,
+                  edgelist=get_EdgesByLabel(G,'0'),
+                  edge_color='silver',
+                  line_width=10,
+              alpha=1)
+  #1  single
+  nx.draw_networkx_edges(G,pos,
+                  edgelist=get_EdgesByLabel(G,'1'),
+                  edge_color='dimgrey',
+                  line_width=10,
+              alpha=1)
+  #2  double
+  nx.draw_networkx_edges(G,pos,
+                  edgelist=get_EdgesByLabel(G,'2'),
+                  edge_color='slateblue',
+                  line_width=10,
+              alpha=1)
+  #3  triple
+  nx.draw_networkx_edges(G,pos,
+                  edgelist=get_EdgesByLabel(G,'3'),
+                  edge_color='crimson',
+                  line_width=10,
+              alpha=1)
 
-    plt.axis('off')
-    plt.show() #visualisation pas possible sur repl
-
-# Fonction display_subGraph
-    # Affiche le graphe choisi
-def display_subGraph(G):
-    pos=nx.spring_layout(G)
-    print("Noeuds graph :" + str(G.nodes))
-    print("Liens graph :" + str(G.edges))
-
-    #Coloration des noeuds
-    
-
-    # 0  C black
-    print(get_EdgesByLabel(G,'0'))
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,0)],#MODDDDIFIER
-                    node_color='black',
-                    node_size=500,
-                alpha=0.8)
-    # 1  N blue
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,1)],
-                    node_color='dodgerblue',
-                    node_size=500,
-                alpha=0.8)
-    # 2  O red
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,2)],
-                    node_color='red',
-                    node_size=500,
-                alpha=0.8)
-    # 3  F yellow
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,3)],
-                    node_color='yellow',
-                    node_size=500,
-                alpha=0.8)
-    # 4  I purple
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,4)],
-                    node_color='purple',
-                    node_size=500,
-                alpha=0.8)
-    # 5  Cl green
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,5)],
-                    node_color='green',
-                    node_size=500,
-                alpha=0.8)
-    # 6  Br brown
-    nx.draw_networkx_nodes(G,pos,
-                    nodelist=[str(i) for i in get_NodesByLabel(G,6)],
-                    node_color='brown',
-                    node_size=500,
-                alpha=0.8)
-
-    #Coloration des liens
-
-    #0  aromatic
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'0'),
-                    edge_color='silver',
-                    line_width=10,
-                alpha=1)
-    #1  single
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'1'),
-                    edge_color='dimgrey',
-                    line_width=10,
-                alpha=1)
-    #2  double
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'2'),
-                    edge_color='slateblue',
-                    line_width=10,
-                alpha=1)
-    #3  triple
-    nx.draw_networkx_edges(G,pos,
-                    edgelist=get_EdgesByLabel(G,'3'),
-                    edge_color='crimson',
-                    line_width=10,
-                alpha=1)
-    plt.axis('off')
-    plt.show() #visualisation pas possible sur repl
-
-
+  plt.axis('off')
+  plt.show() #visualisation pas possible sur repl
 ###
 
 #- Parser
@@ -523,88 +442,243 @@ def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_file
     # Retourne un tuples contenant deux liste contenant elle même des id de graphe
     # Chacune des deux listes reprèsente respectivement les bases train et test 
 def cutBase(graphsLabels_filename):
-    listeClasses = get_GraphIndicator(graphsLabels_filename)
-    l0, l1 = list(), list()
+  start_time = time.time()
+  listeClasses = get_GraphIndicator(graphsLabels_filename)
+  l1, l2 = list(), list()
 
-    # Compte le nb d'élements dans la classe -1  et 1, respectivement nbc0 et nbc1
-    nbc0, nbc1 = get_GraphClass()[1], get_GraphClass()[0]
+  # Compte le nb d'élements dans la classe -1  et 1, respectivement nbc0 et nbc1
+  nbc1, nbc2 = get_GraphClass()[0], get_GraphClass()[1]
 
-    # ic0 et ic1 respectivement ieme element des classe -1 et 1
-    # on arrette de le compter quand on arrive à la moitié du nb de la classe 
-    # pour economiser des traitements inutile
-    ic0 = 0
-    ic1 = 0
-    for i in range(len(listeClasses)):
-        if listeClasses[i] == -1:
-            if ic0 < nbc0/2:
-                ic0 += 1
-                l0.append(i)
-            else:
-                l1.append(i)
-        else:
-            if ic1 < nbc1/2:
-                ic1 += 1
-                l0.append(i)
-            else:
-                l1.append(i)
-    return (l0, l1)
+  # ic2 et ic1 respectivement ieme element des classe -1 et 1
+  # on arrette de le compter quand on arrive à la moitié du nb de la classe 
+  # pour economiser des traitements inutile
+  ic1 = 0
+  ic2 = 0
+  for i in range(len(listeClasses)):
+      if listeClasses[i] == -1:
+          if ic2 < nbc2/2:
+              ic2 += 1
+              l2.append(i+1)
+          else:
+              l1.append(i+1)
+      else:
+          if ic1 < nbc1/2:
+              ic1 += 1
+              l2.append(i+1)
+          else:
+              l1.append(i+1)
+  end_time = time.time()
+
+  return (l1, l2), (end_time-start_time)
 
 #####
+
+#####
+# Fonction qui va donner une prediction pour un sous graphe accompagné de la confiance et du growthrate
+  #input : 
+def noyeauPrediction(sousBase, subgraph):
+    start_time = time.time()
+    county=0
+    fsgC1, fsgC2, totAppSg = 0, 0, 0
+    noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
+    cfC1, cfC2 = 0, 0
+    fqC1, fqC2 = 0, 0
+    growthR = 0
+    
+    for i in sousBase:
+
+        G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename) # Créer un graphe 
+        
+        GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
+        if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
+            
+            # value_when_true if condition else value_when_false
+            # (fsgC1 = fsgC1 + 1) if get_GraphLabels(graphsLabels_filename)[i-1]==1 else (fsgC2 = fsgC2 + 1)
+            if get_GraphLabels(graphsLabels_filename)[i-1]==1:
+              fsgC1+=1
+            else:
+              fsgC2+=1
+
+    # ~sg
+    noFsgC1 = get_GraphClass()[0]-fsgC1
+    noFsgC2 = get_GraphClass()[1]-fsgC2
+    #total apparition et non apparition  
+    totAppSg = fsgC1+fsgC2
+    totNAppSg = noFsgC1+noFsgC2
+
+    #Confiance/Fréquence/crossrate
+    fqC1 = fsgC1 / get_GraphClass()[2]
+    fqC2 = fsgC2 / get_GraphClass()[2]
+
+    
+    if ((fsgC1+fsgC2)/get_GraphClass()[2]) != 0:
+      cfC1 = fqC1 / ((fsgC1+fsgC2)/get_GraphClass()[2])
+    else:
+      cfC1 = 0
+    if ((fsgC1+fsgC2)/get_GraphClass()[2]) != 0:
+      cfC2 = fqC2 / ((fsgC1+fsgC2)/get_GraphClass()[2])
+    else :
+      cfc2 = 0
+    if (fqC2/get_GraphClass()[1]) != 0 :
+      growthR = (fqC1/get_GraphClass()[0]) / (fqC2/get_GraphClass()[1])
+    else:
+      growthR = 1000
+
+    #Prediction 
+    if  fqC1 > fqC2:
+      predict=1
+    else: 
+      predict = -1
+    
+    if predict == 1:
+       cf = cfC1
+    else:
+      cf = cfC2
+
+    end_time = time.time()
+    
+    return end_time-start_time, predict, cf, growthR
+
+
+
+#### Fonction qui essai de classifier un graphe de la base test grace a la base train
+    # input : graph_id, id du graph a predire
+    #          n nombre de sous-graphe à tester dans le graphe
+    # output : (int,int), classe prédit du graphe -1 ou 1 & classe réel du graphe
+def predicateur(graph_id, n, sousBaseTrain, minCf, minGrowth):
+    
+    start_time = time.time()
+    listRes = []
+    for i in range(n):
+        print("numero sous graphe : " + str(i))
+        k = SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename)
+        
+        # predict prend comme valeur la classe supposé du graphe
+        #Calcule les mesures confiance etc
+        time_exec, predict, cf, growthR = noyeauPrediction(sousBaseTrain, k)
+
+        #Determine si k est utile/pertinant pour la prediction
+        #if fruit == 'Apple' : isApple = True
+        print('\n')
+        print("classe : " + str(predict))
+        print('\t')
+        print('\t')
+        print("confiance : " + str(cf))
+        print('\t') 
+        print('\t')
+        print("ta : " + str(growthR))
+        print('\n')
+
+        if cf > minCf and growthR >= minGrowth : 
+          listRes.append(predict)
+        
+    # nb de prediction respectivement pour les listes -1 et 1
+    c1, c2 = 0, 0
+    print("Liste de resultats de predict : " + str(listRes))
+    print('\t')
+    print('\t')
+    for c in listRes:
+      #c1 = c1 + 1 if c == 1 else c2 = c2 + 1
+      #print("c : " + str(c))
+      if c == 1:
+        c1 += 1
+      else:
+        c2 += 1
+    print("Resultat des prediction par classe : " + str(c1) + str(c2))
+    
+    if c1>c2: 
+      prediction = 1
+    elif c1<c2 :
+      prediction = -1
+    else:
+      # Cas ou aucun des sous graphe ne passe le test de confiance 
+      # ou il y a autant de sous graphe qui predit classe -1 et 1
+      prediction = 0 
+
+
+    end_time = time.time()
+    tot_time = end_time-start_time
+    return (prediction, get_GraphIndicator(graphsLabels_filename)[graph_id-1]), (tot_time+time_exec)
 
 # Tests
 
 #- TESTS
 
-#- Test de l'extracteur de sous_graphes avec dis sous_graphes aléatoires
-'''start_time = time.time()
-for i in range(0,10):
-    sb = SgExtractor(1, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename)
-    print('\n Table ' + str(i+1) + ":")
-    compare(188,sb)
-    print("\n")
-    print("Noeuds : \n" + str(sb.nodes.data()))
-    print("\n")
-    print("Liens: \n " + str(sb.edges.data()))
-end_time = time.time()
-print("Temps éxécution : " + str(end_time-start_time) + "seconde(s)")'''
+
+#- Test du prédicateur
+ntm, ntp = cutBase(graphsLabels_filename)[0]
+testOk = 0
+testNOk = 0
+testZ = 0
+tf = 0
+for i in range (0,len(ntp)):
+    print("Graphe num : "+str(i))
+    r,t= predicateur(ntp[i], 20, ntm, 0.6, 0.5)
+    tf += t
+    print('\n')
+    print("Classe Dominante : " + str(r[0]) + " Classe Graphe : " + str(r[1]) + " Temps : " + str(t))
+    if r[0] == r[1]:
+      testOk += 1
+    elif r[0] == 0:
+      testZ += 1
+    else:
+      testNOk += 1
+
+    print("test Ok, test Non Ok, test zero : ", end=" ")
+    print(str(testOk), end=" ")
+    print(", " + str(testNOk), end=" ") 
+    print(", " + str(testZ))
+    print('\n')
+print("% précision : " + str((testOk/(testNOk+testOk+testZ))*100))
+print("Temps total : " + str(tf))
+#- Test de l'extracteur de sous_graphes avec dix sous_graphes aléatoires
+
+
+# start_time = time.time()
+# for i in range(0,10):
+#     sb = SgExtractor(1, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename)
+#     print('\n Table ' + str(i+1) + ":")
+#     compare(188,sb)
+#     print("\n")
+#     print("Noeuds : \n" + str(sb.nodes.data()))
+#     print("\n")
+#     print("Liens: \n " + str(sb.edges.data()))
+# end_time = time.time()
+# print("Temps éxécution : " + str(end_time-start_time) + "seconde(s)")
 
 
 
 #- Test avec le sous-graphe cyclique ("1")---("2")---("3")---("4")---("5")---("6"):
-'''subgraph_nodes = ["1","2","3","4","5","6"]
-subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
-subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
-print('\n')
-print(subgraph_test.edges.data())
-print(get_EdgesByLabel(subgraph_test,0))
-print(compare(188, subgraph_test))'''
+# subgraph_nodes = ["1","2","3","4","5","6"]
+# subgraph_edges = [("1","2"), ("1", "6"), ("2","3"),("3","4"), ("4", "5"), ("5","6")]
+# subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
+# print('\n')
+# print(subgraph_test.edges.data())
+# print(get_EdgesByLabel(subgraph_test,0))
+# print(compare(188, subgraph_test))
 
 #####
 
-'''
+
 #- tests d'affichages
-display_Graph(180)
-display_subGraph(subgraph_test)
+# display_Graph(180)
+# display_subGraph(subgraph_test)
 
 #Graphe 150
 #display_Graph(150)
 
 ##############
-'''
+
 # Autres tests
-'''
-subgraph_nodes = ["3353","3354","3355"]
-subgraph_edges = [("3353","3354"), ("3353","3355")]
-subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
-print('\n')
-print(subgraph_test.nodes.data())
-print(compare(188, subgraph_test))'''
+
+# subgraph_nodes = ["3353","3354","3355"]
+# subgraph_edges = [("3353","3354"), ("3353","3355")]
+# subgraph_test = create_Graph(subgraph_nodes,subgraph_edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
+# print('\n')
+# print(subgraph_test.nodes.data())
+# print(compare(188, subgraph_test))
 
 ##############
-
-
-
-
 
 
 
