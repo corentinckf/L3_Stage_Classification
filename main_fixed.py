@@ -218,6 +218,20 @@ def get_GraphClass():
             countC2 += 1
     return countC1, countC2, countC1+countC2
 
+#Fonction remplaçante de Graph_Class.
+    # Renvoie le nombre total des graphes en index 0, puis 
+    # Pour chaque index de la liste correspondant au nombre de classe donné en paramètre, donne le nombre de graphes correspondant.
+# def get_GraphClass(nbClass, graphLabel_filename):
+#     list = [0 for i in range(nbClass)]
+#     for i in range(0, len(graphLabel_filename)):
+#         list[0] += 1
+#         for j in range(0, nbClass):
+#             if graphLabel_filename[i]== j:
+#                 list[j] += 1
+        
+            
+#     return list
+
 # Fonction qui créer une table de contingence grâce au module Pandas
     # Renvoie une table de contingence
 def get_ContingenceTable(fsgC1, fsgC2, totAppSg, noFsgC1, noFsgC2, totNAppSg):
