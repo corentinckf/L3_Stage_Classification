@@ -219,10 +219,10 @@ def get_GraphClass():
     return countC1, countC2, countC1+countC2
 
 # def get_GraphClass(nbClass, graphLabel_filename):
-#     list = [0 for i in range(nbClass)]
+#     list = [0 for i in range(nbClass+1)]
 #     for i in range(0, len(graphLabel_filename)):
 #         list[0] += 1
-#         for j in range(0, nbClass):
+#         for j in range(0, nbClass+1):
 #             if graphLabel_filename[i]== j:
 #                 list[j] += 1
         
