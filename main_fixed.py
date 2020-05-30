@@ -205,29 +205,31 @@ def create_Graph(nodes_list,edges_list,global_labels_list_node,global_labels_lis
     
     return G
 
-# Fonction get_GraphClass
-    # Renvoie le nombre des graphes de la classe 1,le nombre des graphes de la classe -1, le total des deux nombre
-def get_GraphClass():
-    graphlabelslist = get_GraphLabels(graphsLabels_filename)
-    countC1 = 0
-    countC2 = 0
-    for i in range(0,len(graphlabelslist)):
-        if graphlabelslist[i] == 1 :
-            countC1 += 1
-        else:
-            countC2 += 1
-    return countC1, countC2, countC1+countC2
 
-# def get_GraphClass(nbClass, graphLabel_filename):
-#     list = [0 for i in range(nbClass+1)]
-#     for i in range(0, len(graphLabel_filename)):
-#         list[0] += 1
-#         for j in range(0, nbClass+1):
-#             if graphLabel_filename[i]== j:
-#                 list[j] += 1
-        
-            
-#     return list
+# Fonction ensemble
+    # Renvoie une liste avec aucun doublon
+def ensemble(l):
+    res = list()
+    for e in l:
+        if not e in res:
+            res.append(e)
+    return res
+
+# Fonction get_GraphClass
+    # Renvoie le nombre de graphe total et la liste des tuples (classe, nb apparition)
+def get_GraphClass(graphsLabels_file):
+    graphlabelslist = get_GraphLabels(graphsLabels_file)
+    # Chaque classe du graphe, (classe, nb apparition)
+    classR = [[c,0] for c in list(ensemble(graphlabelslist))]
+    # Nombre de classe
+    nbc = len(classR)
+    
+    for i in range(0,len(graphlabelslist)):
+        for c in range(nbc):
+            if graphlabelslist[i] == classR[c][0]:
+                classR[c][1] += 1
+                break
+    return len(graphlabelslist), classR
 
 # Fonction qui créer une table de contingence grâce au module Pandas
     # Renvoie une table de contingence
@@ -235,11 +237,12 @@ def get_ContingenceTable(fsgC1, fsgC2, totAppSg, noFsgC1, noFsgC2, totNAppSg):
     Ctge_Table = [
     [fsgC1, fsgC2, totAppSg],
     [noFsgC1, noFsgC2, totNAppSg ], 
-    [get_GraphClass()[0], get_GraphClass()[1], get_GraphClass()[2] ]]
+    [e[1] for e in get_GraphClass(graphsLabels_filename)[1]]+[get_GraphClass(graphsLabels_filename)[0]]]
 
     Ctge_Table_df = pd.DataFrame(Ctge_Table,
                                 index=['Sg','~Sg', ''],
-                                columns=['Graphe (1)',' Gaphe (-1)', 'Total Apparition'])
+                                columns=['Graphe ({})'.format(e[0]) for e in get_GraphClass(graphsLabels_filename)[1]] 
+                                        + ['Total Apparition'])
     
     return Ctge_Table_df
 
@@ -338,76 +341,15 @@ def display_Graph(graph):
 
 # Fonction qui , pour chaque graphe créé, compare si le sous graphe 'subgraph' choisi correspond à l'ensemble des graphes 'nbgraph' de la base de données sous forme de liste
     # Renvoie la liste des graphes isomorphique à un sous graphe choisi, temps d'éxécution du code
-def compare(nb_graph,subgraph, nbclass):
-    start_time = time.time()
-    list = []
-    county=0
-    #fsgC1, fsgC2, totAppSg = 0, 0, 0
-    fsg_List = [0 for i in range(nbClass)]
-    no_fsg_List = [0 for i in range(nbClass)]
-    #noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
-    #cfC1, cfC2 = 0, 0
-    cf_List = [0 for i in range(nbClass)]
-    fq_List = [0 for i in range(nbClass)]
-    aml_List = [0 for i in range(nbClass)]
-    gR= 0
-    #fqC1, fqC2 = 0, 0
-    #amlC1, amlC2 = 0, 0
-    print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
-    for i in range(1,nb_graph+1):
-
-        G = create_Graph(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),get_GraphEdges(get_GraphNodes(i,get_GraphIndicator(graphInds_filename)),edges_filename),get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename) # Créer un graphe 
-        GM = isomorphism.GraphMatcher(G,subgraph,node_match= lambda n1,n2 : n1['atome']==n2['atome'], edge_match= lambda e1,e2: e1['label'] == e2['label']) # GM = GraphMatcher
-        if GM.subgraph_is_isomorphic(): # Retourne un booléen si le sougraphe est isomorphe
-            list.append((i,'Oui'))
-            county+=1 
-            
-            for j in range(0,nbClass):
-                if get_GraphLabels(graphsLabels_filename)[i] == j:
-                    fsg_List[j] += 1
-
-                
-        else:
-            list.append((i,"Non"))
-    list.append(("yes :", county))
-    list.append(("no :", nb_graph-county))
-
-    end_time = time.time()
-    # ~sg
-    noFsgC1 = get_GraphClass()[0]-fsgC1
-    noFsgC2 = get_GraphClass()[1]-fsgC2
-    for i in range(0,nbClass):
-        no_fsg_List[i] = get_GraphClass(nbClass, graphLabel_filename)[i]- fsg_List[i]
-        fsg_List[0] += fsg_List[i]
-        no_fsg_List += no_fsg_List[i]
-
-        fq_List[i] = fsg_List[i] / get_GraphClass(nbClass, graphLabel_filename)[0]
-
-        cf_List[i] = fq_List[i] / (fsg_List[0]/get_GraphClass(nbClass, graphLabel_filename)[0])
-
-        #aml_List[i]
-
-        gR /= fq_List[i] / get_GraphClass(nbClass, graphLabel_filename)[i]
-
-    return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
-    
-##########
-# NOuvelle version de la methode compare 
-# def compare(nb_graph,subgraph, nbclass):
+# def compare(nb_graph,subgraph):
 #     start_time = time.time()
 #     list = []
 #     county=0
-#     #fsgC1, fsgC2, totAppSg = 0, 0, 0
-#     fsg_List = [0 for i in range(nbClass)]
-#     no_fsg_List = [0 for i in range(nbClass)]
-#     #noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
-#     #cfC1, cfC2 = 0, 0
-#     cf_List = [0 for i in range(nbClass)]
-#     fq_List = [0 for i in range(nbClass)]
-#     aml_List = [0 for i in range(nbClass)]
-#     gR= 0
-#     #fqC1, fqC2 = 0, 0
-#     #amlC1, amlC2 = 0, 0
+#     fsgC1, fsgC2, totAppSg = 0, 0, 0
+#     noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
+#     cfC1, cfC2 = 0, 0
+#     fqC1, fqC2 = 0, 0
+#     amlC1, amlC2 = 0, 0
 #     print("Liste des résultats  : ('id_graph','Sous-graphe isomorphique ? Y/N')")
 #     for i in range(1,nb_graph+1):
 
@@ -417,10 +359,10 @@ def compare(nb_graph,subgraph, nbclass):
 #             list.append((i,'Oui'))
 #             county+=1 
             
-#             for j in range(0,nbClass):
-#                 if get_GraphLabels(graphsLabels_filename)[i] == j:
-#                     fsg_List[j] += 1
-
+#             if get_GraphLabels(graphsLabels_filename)[i] == 1:
+#                 fsgC1+=1
+#             else:
+#                 fsgC2+=1
                 
 #         else:
 #             list.append((i,"Non"))
@@ -431,27 +373,42 @@ def compare(nb_graph,subgraph, nbclass):
 #     # ~sg
 #     noFsgC1 = get_GraphClass()[0]-fsgC1
 #     noFsgC2 = get_GraphClass()[1]-fsgC2
-#     for i in range(0,nbClass):
-#         no_fsg_List[i] = get_GraphClass(nbClass, graphLabel_filename)[i]- fsg_List[i]
-#         fsg_List[0] += fsg_List[i]
-#         no_fsg_List += no_fsg_List[i]
+#     totAppSg = fsgC1+fsgC2
+#     totNAppSg = noFsgC1+noFsgC2
 
-#         fq_List[i] = fsg_List[i] / get_GraphClass(nbClass, graphLabel_filename)[0]
+#     #Confiance/Fréquence/Amélioration/crossrate
+#     fqC1 = fsgC1 / get_GraphClass()[2]
+#     fqC2 = fsgC2 / get_GraphClass()[2]
 
-#         cf_List[i] = fq_List[i] / (fsg_List[0]/get_GraphClass(nbClass, graphLabel_filename)[0])
+#     cfC1 = fqC1 / ((fsgC1+fsgC2)/get_GraphClass()[2])
+#     cfC2 = fqC2 / ((fsgC1+fsgC2)/get_GraphClass()[2])
 
-#         #aml_List[i]
+#     amlC1 = cfC1 / ((get_GraphClass()[0]/get_GraphClass()[2]))
+#     amlC2 = cfC1 / (get_GraphClass()[1]/get_GraphClass()[2])
 
-#         gR /= fq_List[i] / get_GraphClass(nbClass, graphLabel_filename)[i]
+#     growthR = (fqC1/get_GraphClass()[0]) / (fqC2/get_GraphClass()[1])
+    
 
+
+#     #############################
+#     # Table de contingence fictive, à modifier si nécessaire
+#     ct = get_ContingenceTable(fsgC1, fsgC2, totAppSg, noFsgC1, noFsgC2, totNAppSg)
+#     print(ct)
+#     print('/n')
+#     #print("Confiance du SG dans la classe C1" + fsgC1/get_GraphClass()[0])
+#     print('/n')
+#     #print("Confiance du SG dans la classe C2" + fsgC2/get_GraphClass()[1])
+#     print('/n')
+#     #############################
+    
 #     return list,"Temps éxécution : " + str(end_time-start_time) + "seconde(s)"
-#################
+#     # , "confianceC1 : " + str(cfC1), " confianceC2 : " + str(cfC2), " frequenceC1 : " + str(fqC1), " frequenceC2 : " + str(fqC2)," ameliorationC1 : " + str(amlC1), " ameliorationC2 : " + str(amlC2), " growth : " + str(growthR)
+# ###
+
 
 #################
 # Fonction qui va extraire un sous-graphe aléatoire dans le graphe donné
 def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_filename,graphInds_filename):
-    #G = create_Graph(get_GraphNodes(graph_id,get_GraphIndicator('MUTAG_graph_indicator.txt')),get_GraphEdges(get_GraphNodes(graph_id,get_GraphIndicator('MUTAG_graph_indicator.txt')),'MUTAG_A.txt'),get_NodesLabels('MUTAG_node_labels.txt'),get_EdgesLabels('MUTAG_edge_labels.txt')) # Créer un graphe 
-    
     #Liste des noeuds et liens du sous-graphe
     nodes = []
     edges = []
@@ -468,9 +425,9 @@ def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_file
     nodes.append(firstNode)
 
     # Liste des liens du graphe
-    edgeList = get_GraphEdges(get_GraphNodes(graph_id,get_GraphIndicator(graphInds_filename)),edges_filename)
+    edgeList = get_GraphEdges(nodeList ,edges_filename)
     
-
+    # Recherche un lien dont une extrémité appartient au sous-graphe et pas l'autre. Puis on ajoute ce noeud manquant et ce lien au sous-graphe.
     while len(nodes) != SgLen:
         id = -1
         while id == -1:
@@ -490,71 +447,82 @@ def SgExtractor(graph_id, nodesLabels_filename, edgesLabels_filename, edges_file
                 edgeList.remove([b, a])
             else:
                 id = -1
+    # On rajoutes tout les liens manquant afin d'obtenir un sous-graphe induit par les noeuds.
     for a, b in edgeList:
         if a in nodes and b in nodes:
             edges.append([a, b])
+    # On modélise notre sous-graphe ainsi obtenu.
     sg = create_Graph(nodes,edges,get_NodesLabels(nodesLabels_filename),get_EdgesLabels(edgesLabels_filename),edges_filename, edgesLabels_filename)
     return sg
+
 ########################
 ## Fonction qui coupe la base en deux tout en gardant les proportions de classe à 1 élément près
-    # Retourne un tuples contenant deux liste contenant elle même des id de graphe
+    # Retourne un tuples contenant deux listes contenant elles même des id de graphe
     # Chacune des deux listes reprèsente respectivement les bases train et test 
 def cutBase(graphsLabels_filename):
-  start_time = time.time()
-  listeClasses = get_GraphIndicator(graphsLabels_filename)
-  l1, l2 = list(), list()
+    start_time = time.time()
+    listeClasses = get_GraphIndicator(graphsLabels_filename)
+    l1, l2 = list(), list()
 
-  # Compte le nb d'élements dans la classe -1  et 1, respectivement nbc0 et nbc1
-  nbc1, nbc2 = get_GraphClass()[0], get_GraphClass()[1]
+    # Liste des classe et de leurs occurences
+    gco = get_GraphClass(graphsLabels_filename)[1]
 
-  # ic2 et ic1 respectivement ieme element des classe -1 et 1
-  # on arrette de le compter quand on arrive à la moitié du nb de la classe 
-  # pour economiser des traitements inutile
-  ic1 = 0
-  ic2 = 0
-  for i in range(len(listeClasses)):
-      if listeClasses[i] == -1:
-          if ic2 < nbc2/2:
-              ic2 += 1
-              l2.append(i+1)
-          else:
-              l1.append(i+1)
-      else:
-          if ic1 < nbc1/2:
-              ic1 += 1
-              l2.append(i+1)
-          else:
-              l1.append(i+1)
-  end_time = time.time()
+    # Compte le nb d'élement dans chaque classe
+    nbc = [e[1] for e in gco]
 
-  return (l1, l2), (end_time-start_time)
+    # ic ieme element de chaque classe
+    # on arrette de le compter quand on arrive à la moitié du nb de la classe 
+    # pour economiser des traitements inutile
+    ic = [0 for i in range(len(nbc))]
+    for i in range(len(listeClasses)):
+        for j in range(len(gco)):
+            if listeClasses[i] == gco[j][0]:
+                if ic[j] < nbc[j]/2:
+                    ic[j] += 1
+                    l1.append(i+1) #car les id des graphe commencent à 1
+                else:
+                    l2.append(i+1)
+                break
+
+
+    end_time = time.time()
+
+    return (l1, l2), (end_time-start_time)
 
 #### Fonction qui compte le nombre d'element dans chaque classe pour une sous base donnée
     # input : list<int>, liste des id des graphes de la sous base
     # output : int,int, respectivement, le nombre d'élément de classe 1 et -1 dans la sousbase
-def countClassByListId(list_id):
-    c1, c2 = 0, 0
+def countClassByListId(list_id, graphsLabels_file):
+    classLabels = get_GraphIndicator(graphsLabels_file)
+    nbc = [(e[0],0) for e in get_GraphClass(graphsLabels_file)[1]]
+    res = [0 for i in nbc]
     for gid in list_id:
-        if get_GraphIndicator(graphsLabels_filename)[gid-1] == 1:
-            c1 += 1
-        else:
-            c2 += 1
-    return c1, c2
+        for x in range(len(nbc)):
+            # Indice debutant à 1
+            if classLabels[gid-1] == nbc[x][0]:
+                res[x] += 1
+                break
+    return res
 
 #####
 
 #####
 # Fonction qui va donner une prediction pour un sous graphe accompagné de la confiance et du growthrate
   #input : 
-def noyeauPrediction(sousBase, subgraph):
+def noyeauPrediction(sousBase, subgraph, graphsLabels_filename):
+    gc = get_GraphClass(graphsLabels_filename)
     start_time = time.time()
     county=0
-    fsgC1, fsgC2, totAppSg = 0, 0, 0
-    noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
-    cfC1, cfC2 = 0, 0
-    fqC1, fqC2 = 0, 0
-    growthR = 0
-    nbc1, nbc2 = countClassByListId(sousBase)
+    fsg = [0 for i in gc[1]]
+    # fsgC1, fsgC2, totAppSg = 0, 0, 0
+    noFsg = [0 for i in gc[1]]
+    # noFsgC1, noFsgC2, totNAppSg = 0, 0, 0
+    cf = [0 for i in gc[1]]
+    # cfC1, cfC2 = 0, 0
+    fq = [0 for i in gc[1]]
+    # fqC1, fqC2 = 0, 0
+    growthR = [0 for i in gc[1]]
+    nb = countClassByListId(sousBase, graphsLabels_filename)
     nbc = len(sousBase)
     
     for i in sousBase:
@@ -566,63 +534,57 @@ def noyeauPrediction(sousBase, subgraph):
             
             # value_when_true if condition else value_when_false
             # (fsgC1 = fsgC1 + 1) if get_GraphLabels(graphsLabels_filename)[i-1]==1 else (fsgC2 = fsgC2 + 1)
-            if get_GraphLabels(graphsLabels_filename)[i-1]==1:
-              fsgC1+=1
-            else:
-              fsgC2+=1
+            
+            for j in range(len(gc[1])):
+                if get_GraphLabels(graphsLabels_filename)[i-1] == gc[1][j][0]:
+                    fsg[j] += 1
+                    break
 
     # ~sg
-    noFsgC1 = nbc1-fsgC1
-    noFsgC2 = nbc2-fsgC2
+    for i in range(len(fsg)):
+        noFsg[i] = nb[i]-fsg[i]
+
     #total apparition et non apparition  
-    totAppSg = fsgC1+fsgC2
-    totNAppSg = noFsgC1+noFsgC2
+    #            totAppSg = fsgC1+fsgC2
+    #            totNAppSg = noFsgC1+noFsgC2
 
     #Confiance/Fréquence/crossrate
-    fqC1 = fsgC1 / nbc1
-    fqC2 = fsgC2 / nbc2
 
+    # Fréquence
+    for i in range(len(fq)):
+        fq[i] = fsg[i]/nb[i]
+
+    # Confiance
+    for i in range(len(cf)):
+        if (sum(fsg)/nbc) != 0:
+            cf[i] = fq[i]/(sum(fsg)/nbc)
+        else:
+            cf[i] = 0
+
+    # GrowthRate
+    for i in range(len(growthR)):
+        if (sum(fq)-fq[i])/(sum(nb)-nb[i]) != 0:
+            growthR[i] = (fq[i]/nb[i])/((sum(fq)-fq[i])/(sum(nb)-nb[i]))
+        else:
+            growthR[i] = 1000
     
-    if ((fsgC1+fsgC2)/nbc) != 0:
-      cfC1 = fqC1 / ((fsgC1+fsgC2)/nbc)
-    else:
-      cfC1 = 0
-    if ((fsgC1+fsgC2)/nbc) != 0:
-      cfC2 = fqC2 / ((fsgC1+fsgC2)/nbc)
-    else :
-      cfC2 = 0
+    
     # if (fqC2/get_GraphClass()[1]) != 0 :
     #   growthR = (fqC1/get_GraphClass()[0]) / (fqC2/get_GraphClass()[1])
     # else:
     #   growthR = 1000
 
     #Prediction 
-    #fqC1p = fsgC1 / get_GraphClass()[0]
-    #fqC2p = fsgC2 / get_GraphClass()[1]
-    #print((fqC1, fqC2))
-    #print((fqC1p, fqC2p))
-    if  fqC1 > fqC2:
-        predict=1
-    else: 
-      
-      predict = -1
-    
-    if predict == 1:
-        cf = cfC1
-        if (fqC2/nbc2) != 0 :
-            growthR = (fqC1/nbc1) / (fqC2/nbc2)
-        else:
-            growthR = 1000
-    else:
-        cf = cfC2
-        if (fqC1/nbc1) != 0 :
-            growthR = (fqC2/nbc2) / (fqC1/nbc1) 
-        else:
-            growthR = 1000
+    maxId = fq.index(max(fq))
+    predict = gc[1][maxId][0]
+
+    # Reste du résultat
+    rcf = cf[maxId]
+    rgrowthR = growthR[maxId]
 
     end_time = time.time()
     
-    return end_time-start_time, predict, cf, growthR
+    return end_time-start_time, predict, rcf, rgrowthR
 
 
 
@@ -633,6 +595,7 @@ def noyeauPrediction(sousBase, subgraph):
 def predicateur(graph_id, n, sousBaseTrain, minCf, minGrowth):
     
     start_time = time.time()
+    gco = get_GraphClass(graphsLabels_filename)[1]
     listRes = []
     for i in range(n):
         print("numero sous graphe : " + str(i))
@@ -640,7 +603,7 @@ def predicateur(graph_id, n, sousBaseTrain, minCf, minGrowth):
         
         # predict prend comme valeur la classe supposé du graphe
         #Calcule les mesures confiance etc
-        time_exec, predict, cf, growthR = noyeauPrediction(sousBaseTrain, k)
+        time_exec, predict, cf, growthR = noyeauPrediction(sousBaseTrain, k, graphsLabels_filename)
 
         #Determine si k est utile/pertinant pour la prediction
         #if fruit == 'Apple' : isApple = True
@@ -650,25 +613,29 @@ def predicateur(graph_id, n, sousBaseTrain, minCf, minGrowth):
         if cf > minCf and growthR >= minGrowth : 
           listRes.append(predict)
         
-    # nb de prediction respectivement pour les listes -1 et 1
-    c1, c2 = 0, 0
+    # nb de prediction respectivement pour chaque classe
+    nbpc = [0 for i in gco]
+    #print(gco)
     
-    for c in listRes:
+    # for c in listRes:
       #c1 = c1 + 1 if c == 1 else c2 = c2 + 1
       #print("c : " + str(c))
-      if c == 1:
-        c1 += 1
-      else:
-        c2 += 1
-        
-    if c1>c2: 
-      prediction = 1
-    elif c1<c2 :
-      prediction = -1
+    #   if c == 1:
+    #     c1 += 1
+    #   else:
+    #     c2 += 1
+    #print(listRes)
+    for i in range(len(nbpc)):
+        nbpc[i] = listRes.count(gco[i][0])
+
+    #print("{} == {} = {}".format(nbpc, list(ensemble(nbpc)),nbpc == list(ensemble(nbpc)) ))
+    if nbpc == list(ensemble(nbpc)):
+        predId = nbpc.index(max(nbpc))
+        prediction = gco[predId][0]
     else:
-      # Cas ou aucun des sous graphe ne passe le test de confiance 
-      # ou il y a autant de sous graphe qui predit classe -1 et 1
-      prediction = 0 
+        # Cas ou aucun des sous graphe ne passe le test de confiance 
+      # ou il y a autant de sous graphe dans deux classes
+        prediction = 0
 
 
     end_time = time.time()
@@ -681,6 +648,7 @@ def predicateur(graph_id, n, sousBaseTrain, minCf, minGrowth):
 
 
 #- Test du prédicateur
+
 ntm, ntp = cutBase(graphsLabels_filename)[0]
 print("Taille ntp : "+ str(len(ntp)))
 print(cutBase(graphsLabels_filename)[1])
@@ -690,7 +658,7 @@ testZ = 0
 tf = 0
 for i in range (0,len(ntp)):
     print("Graphe num :"+str(i))
-    r,t= predicateur(ntp[i], 10, ntm, 0.6, 2)
+    r,t= predicateur(ntp[i], 10, ntm, 0.6, 2)#10 
     tf += t
     print(" Classe Dominante : " + str(r[0]) + " Classe Graphe : " + str(r[1]) + " Temps : " + str(t))
     if r[0] == r[1]:
@@ -702,6 +670,12 @@ for i in range (0,len(ntp)):
     print(testOk, testNOk, testZ)
 print("% précision : " + str((testOk/(testNOk+testOk+testZ))*100))
 print("Temps total : " + str(tf))
+
+
+
+
+
+
 #- Test de l'extracteur de sous_graphes avec dix sous_graphes aléatoires
 
 
@@ -750,3 +724,33 @@ print("Temps total : " + str(tf))
 # print(compare(188, subgraph_test))
 
 ##############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
